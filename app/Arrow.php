@@ -11,4 +11,10 @@ class Arrow extends Model
     protected $fillable = ['m5_color', 'm15_color', 'h1_color', 'lts_color', 'hts_color', 'ts_color', 'ts_direction'];
 
     protected $hidden = [];
+
+    public function pair()
+    {
+        return $this->belongsTo(Pair::class, 'pair_id');
+    }
+
 }

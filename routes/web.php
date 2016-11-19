@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+
+Route::get("/", ["as" => "mt4_index", "uses" => "MT4Controller@index"]);
