@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePriceTable extends Migration
+class CreatePricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreatePriceTable extends Migration
      */
     public function up()
     {
-        Schema::create('price', function (Blueprint $table) {
+        Schema::create('prices', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('para', 6);
+            $table->integer('pair_id')->unsigned();
+            $table->foreign('pair_id')->references('id')->on('pairs')->onDelete('cascade');
             $table->text('bid_price');
             $table->text('period_m5');
             $table->text('period_m15');
@@ -34,6 +35,6 @@ class CreatePriceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('price');
+        Schema::dropIfExists('prices');
     }
 }

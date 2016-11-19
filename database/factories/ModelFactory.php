@@ -21,3 +21,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Pair::class, function (Faker\Generator $faker) {
+    $pairs = array("AUDCAD", "AUDCHF", "AUDJPY", "AUDNZD", "AUDUSD", "CADCHF", "CADJPY", "CHFJPY", "EURAUD", "EURCAD",
+        "EURCHF", "EURGBP", "EURJPY", "EURNZD", "EURUSD", "GBPAUD", "GBPCAD", "GBPCHF", "GBPJPY", "GBPNZD",
+        "GBPUSD", "NZDJPY", "NZDUSD", "USDCAD", "USDCHF", "USDJPY");
+    return [
+        'pair' => $faker->unique()->randomElement($pairs)
+    ];
+});
+

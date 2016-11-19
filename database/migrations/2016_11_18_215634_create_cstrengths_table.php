@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCstrengthTable extends Migration
+class CreateCstrengthsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCstrengthTable extends Migration
      */
     public function up()
     {
-        Schema::create('cstrength', function (Blueprint $table) {
+        Schema::create('cstrengths', function (Blueprint $table) {
             $table->increments('id');
             $table->text('usd_now');
             $table->text('usd_then');
@@ -43,6 +43,6 @@ class CreateCstrengthTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cstrength');
+        Schema::dropIfExists('cstrengths');
     }
 }

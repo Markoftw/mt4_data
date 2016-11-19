@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PriceTableSeeder extends Seeder
+class PricesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,8 +17,11 @@ class PriceTableSeeder extends Seeder
             "GBPUSD", "NZDJPY", "NZDUSD", "USDCAD", "USDCHF", "USDJPY");
 
         foreach ($pairs as $pair) {
-            DB::table('price')->insert([
-                'para' => $pair,
+
+            $pair_id = \App\Pair::where('pair', $pair)->select('id')->first();
+
+            \App\Price::create([
+                'pair_id' => $pair_id->id,
                 'bid_price' => $faker->randomFloat(null, 0, 120),
                 'period_m5' => $faker->randomFloat(null, 0, 120),
                 'period_m15' => $faker->randomFloat(null, 0, 120),

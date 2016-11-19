@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHistoryTable extends Migration
+class CreatePairsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('history', function (Blueprint $table) {
+        Schema::create('pairs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('pair_id')->unsigned();
-            $table->foreign('pair_id')->references('id')->on('pairs')->onDelete('cascade');
-            $table->string('order_type', 4);
-            $table->text('bid_price');
-            $table->string('rating', 10);
+            $table->string('pair', 6);
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreateHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history');
+        Schema::dropIfExists('pairs');
     }
 }

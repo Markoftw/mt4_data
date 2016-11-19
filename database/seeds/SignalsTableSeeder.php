@@ -17,8 +17,11 @@ class SignalsTableSeeder extends Seeder
             "GBPUSD", "NZDJPY", "NZDUSD", "USDCAD", "USDCHF", "USDJPY");
 
         foreach ($pairs as $pair) {
-            DB::table('signals')->insert([
-                'para' => $pair,
+
+            $pair_id = \App\Pair::where('pair', $pair)->select('id')->first();
+
+            \App\Signal::create([
+                'pair_id' => $pair_id->id,
                 'cs_signal' => $faker->randomElement(['NO', 'SELL', 'BUY']),
                 'p_m5' => $faker->randomElement(['NO', 'SELL', 'BUY']),
                 'p_m15' => $faker->randomElement(['NO', 'SELL', 'BUY']),

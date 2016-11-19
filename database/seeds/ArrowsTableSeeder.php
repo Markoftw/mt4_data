@@ -17,8 +17,11 @@ class ArrowsTableSeeder extends Seeder
             "GBPUSD", "NZDJPY", "NZDUSD", "USDCAD", "USDCHF", "USDJPY");
 
         foreach ($pairs as $pair) {
-            DB::table('arrows')->insert([
-                'para' => $pair,
+
+            $pair_id = \App\Pair::where('pair', $pair)->select('id')->first();
+
+            \App\Arrow::create([
+                'pair_id' => $pair_id->id,
                 'm5_color' => $faker->randomElement(['255', '32768', '65535']),
                 'm15_color' => $faker->randomElement(['255', '32768', '65535']),
                 'h1_color' => $faker->randomElement(['255', '32768', '65535']),

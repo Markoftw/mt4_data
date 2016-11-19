@@ -15,7 +15,8 @@ class CreateArrowsTable extends Migration
     {
         Schema::create('arrows', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('para', 6);
+            $table->integer('pair_id')->unsigned();
+            $table->foreign('pair_id')->references('id')->on('pairs')->onDelete('cascade');
             $table->string('m5_color', 5);
             $table->string('m15_color', 5);
             $table->string('h1_color', 5);
