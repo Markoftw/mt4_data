@@ -19,6 +19,11 @@ class MT4Controller extends Controller
         return view('forex_table');
     }
 
+    public function history()
+    {
+        return view('forex_table_history');
+    }
+
     public function api_Json()
     {
         $data = Arrow::with('pair')->get()->toJson();

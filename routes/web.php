@@ -16,3 +16,15 @@
 });*/
 
 Route::get("/", ["as" => "mt4_index", "uses" => "MT4Controller@index"]);
+Route::get("/history", ["as" => "mt4_history", "uses" => "MT4Controller@history"]);
+
+Route::get('/test', [
+    'as' => 'test',
+    function () {
+
+        $arrows = \App\Arrow::with('pair')->get()->toJson();
+
+        event(new \App\Events\SendForexData($arrows));
+
+    }
+]);
