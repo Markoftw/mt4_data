@@ -18,13 +18,6 @@
 Route::get("/", ["as" => "mt4_index", "uses" => "MT4Controller@index"]);
 Route::get("/history", ["as" => "mt4_history", "uses" => "MT4Controller@history"]);
 
-Route::get('/test', [
-    'as' => 'test',
-    function () {
-
-        $arrows = \App\Arrow::with('pair')->get()->toJson();
-
-        event(new \App\Events\SendForexData($arrows));
-
-    }
-]);
+Route::get("/data", ["as" => "mt4_data", "uses" => "MT4Controller@getData"]);
+Route::get("/update/one", ["as" => "mt4_update_one", "uses" => "MT4Controller@calculate_one"]);
+Route::get("/update", ["as" => "mt4_update", "uses" => "MT4Controller@calculate"]);

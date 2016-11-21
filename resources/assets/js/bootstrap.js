@@ -31,6 +31,10 @@ Vue.http.interceptors.push((request, next) => {
     next();
 });
 
+/*Vue.config.warnExpressionErrors = false;
+Vue.config.debug = false;
+Vue.config.devtools = false;*/
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -42,6 +46,6 @@ import Echo from "laravel-echo"
 window.Echo = new Echo({
     cluster: 'eu',
     broadcaster: 'pusher',
-    key: '631c6d37466c16baeb85',
+    key: 'b4a91269dd5b2f1188c8',
     encrypted: true
 });

@@ -7,3 +7,26 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.table-right-border {
+  border-right: 2px solid #ddd !important;
+}
+.table-bottom-border {
+  border-bottom: 2px solid #ddd !important;
+}
+.table-left-border {
+  border-left: 2px solid #ddd !important;
+}
+.table-top-border {
+  border-top: 2px solid #ddd !important;
+}
+.container-full {
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+#app,
+.container {
+  width: 100% !important;
+  height: 100% !important;
+}

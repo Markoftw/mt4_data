@@ -16,16 +16,18 @@ class SendForexData implements ShouldBroadcast
     /**
      * @var
      */
-    public $arrows;
+    public $signals;
 
     /**
      * Create a new event instance.
      *
-     * @param $arrows
+     * @param $signals
+     * @internal param $arrows
      */
-    public function __construct($arrows)
+    public function __construct($signals)
     {
-        $this->arrows = $arrows;
+
+        $this->signals = $signals;
     }
 
     /**

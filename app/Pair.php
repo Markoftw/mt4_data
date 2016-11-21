@@ -11,7 +11,7 @@ class Pair extends Model
 
     protected $fillable = ['pair'];
 
-    protected $hidden = [];
+    protected $hidden = ['created_at', 'updated_at'];
 
     public function arrows()
     {
