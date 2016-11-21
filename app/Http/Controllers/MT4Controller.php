@@ -156,6 +156,7 @@ class MT4Controller extends Controller
     public function tests()
     {
         $this->old_signals = Signal::with('pair')->get()->toArray();
+        Signal::where('id', 1)->update(['cs_signal' => 'New value']);
         $new = Signal::with('pair')->get()->toArray();
         $different = false;
         for($i = 0; $i < 26; $i++) {
