@@ -28,21 +28,21 @@
                     </thead>
                     <tbody>
                     <tr v-for="row in table_data" :class="{'danger': signal(row) === 'SELL', 'success': signal(row) === 'BUY'}">
-                        <td>{{row.pair.pair}}</td>
-                        <td>{{row.cs_signal}}</td>
-                        <td>{{row.p_m5}}</td>
-                        <td>{{row.p_m15}}</td>
-                        <td>{{row.p_m30}}</td>
-                        <td>{{row.p_h1}}</td>
-                        <td>{{row.TD_m5}}</td>
-                        <td>{{row.TD_m15}}</td>
-                        <td>{{row.TD_h1}}</td>
-                        <td>{{row.TD_LTS}}</td>
-                        <td>{{row.TD_HTS}}</td>
-                        <td>{{row.TD_TS}}</td>
-                        <td>{{row.EVO_5}}</td>
-                        <td>{{row.EVO_15}}</td>
-                        <td v-html="signal_td(row)"></td>
+                        <td data-original-title="Pair" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.pair.pair}}</td>
+                        <td data-original-title="CS Signal" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.cs_signal}}</td>
+                        <td data-original-title="Period M5" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.p_m5}}</td>
+                        <td data-original-title="Period M15" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.p_m15}}</td>
+                        <td data-original-title="Period M30" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.p_m30}}</td>
+                        <td data-original-title="Period H1" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.p_h1}}</td>
+                        <td data-original-title="TD M5" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_m5}}</td>
+                        <td data-original-title="TD M15" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_m15}}</td>
+                        <td data-original-title="TD H1" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_h1}}</td>
+                        <td data-original-title="TD LTS" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_LTS}}</td>
+                        <td data-original-title="TD HTS" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_HTS}}</td>
+                        <td data-original-title="TD TS" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.TD_TS}}</td>
+                        <td data-original-title="EVO 5" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.EVO_5}}</td>
+                        <td data-original-title="EVO 15" data-container="body" data-toggle="tooltip" data-placement="bottom">{{row.EVO_15}}</td>
+                        <td v-html="signal_td(row)" data-original-title="Signal" data-container="body" data-toggle="tooltip" data-placement="bottom"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -106,6 +106,9 @@
                     });
                     self.last_refresh = new Date(response.data[0].updated_at).toString();
                     self.diff_data = response.data[0].razlika;
+                    Vue.nextTick(() => {
+                        $('[data-toggle="tooltip"]').tooltip()
+                    });
                 });
             },
             signal(pair) {
@@ -155,7 +158,7 @@
                 diff_setting.append('data_type', 'razlika');
                 diff_setting.append('data_value', this.diff_data);
                 Vue.http.post('/store/setting', diff_setting).then((response) => {
-                    console.log(response);
+                    //console.log(response);
                 });
             }
         },
