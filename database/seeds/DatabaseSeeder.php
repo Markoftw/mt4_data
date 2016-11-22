@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PricesTableSeeder::class);
         $this->call(SignalsTableSeeder::class);
         $this->call(CStrengthsTableSeed::class);
-
+        $this->call(HistoryTableSeeder::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendForexData;
+use App\Events\SendHistoryData;
 use App\Events\SendSettingData;
 use DB;
 use Illuminate\Http\Request;
@@ -39,6 +40,12 @@ class MT4Controller extends Controller
         $signals[0]['updated_at'] = $date;
         $signals[0]['razlika'] = $data;
         return $signals;
+    }
+
+    public function getHistoryData()
+    {
+        $history = History::with('pair')->orderBy('id', 'DESC')->get()->take(10)->toArray();
+        return $history;
     }
 
     public function calculate_one()
@@ -157,6 +164,15 @@ class MT4Controller extends Controller
         }
     }
 
+    public function checkHistory($pair)
+    {
+        $history = Pair::find($pair);
+        $results = $history->history()->with('pair')->orderBy('id', 'DESC')->first();
+        if(count($results)) {
+            return $results->toArray();
+        }
+    }
+
     public function tests()
     {
         $this->old_signals = Signal::with('pair')->get()->toArray();
@@ -187,18 +203,9 @@ class MT4Controller extends Controller
         $p = Pair::find($request->input('pair_id'));
         $history = $p->history()->create($history_data);
         if($history) {
-            return Response::json([
-                'errors' => false,
-                'data' => 'success',
-            ]);
+            $hs_data = $this->getHistoryData();
+            broadcast(new SendHistoryData($hs_data));
         }
-        return Response::json([
-            'message' => '400 error',
-            'errors' => [
-                'message' => ['error'],
-            ],
-            'status_code' => 400,
-        ], 400);
     }
 
     public function storeSetting(Request $request)
@@ -206,18 +213,7 @@ class MT4Controller extends Controller
         $data = Data::where('data_type', $request->input('data_type'))->update(['data' => $request->input('data_value')]);
         if($data) {
             broadcast(new SendSettingData(['razlika' => $request->input('data_value')]));
-            return Response::json([
-                'errors' => false,
-                'data' => 'success',
-            ]);
         }
-        return Response::json([
-            'message' => '400 error',
-            'errors' => [
-                'message' => ['error'],
-            ],
-            'status_code' => 400,
-        ], 400);
     }
 
     private function cstrength($item, $id)
