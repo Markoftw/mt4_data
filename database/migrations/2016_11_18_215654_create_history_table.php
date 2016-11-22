@@ -19,6 +19,10 @@ class CreateHistoryTable extends Migration
             $table->foreign('pair_id')->references('id')->on('pairs')->onDelete('cascade');
             $table->string('order_type', 4);
             $table->text('bid_price');
+            $table->text('difference')->nullable();
+            $table->string('m5', 4)->default('rate');
+            $table->string('m15', 4)->default('rate');
+            $table->string('h1', 4)->default('rate');
             $table->string('rating', 10);
             $table->timestamps();
         });

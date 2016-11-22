@@ -209,7 +209,7 @@
                             store_buy.append('pair_name', pair.pair.pair);
                             store_buy.append('order_type', 'BUY');
                             store_buy.append('pair_id', pair.id);
-                            Vue.http.post('/store/history', store_sell).then((response) => {
+                            Vue.http.post('/store/history', store_buy).then((response) => {
                                 //console.log(response);
                             });
                         }
