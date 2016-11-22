@@ -66,6 +66,7 @@
             fetchTableData() {
                 var self = this;
                 Vue.http.get('/data').then((response) => {
+                    //console.log(response);
                     _.forEach(response.data, function(item){
                         self.table_data.push(item);
                     });
@@ -90,11 +91,25 @@
                         && pair.p_h1 === 'SELL' && pair.TD_m5 === 'SELL' && pair.TD_m15 === 'SELL' && pair.TD_h1 === 'SELL'
                         && pair.TD_LTS === 'SELL' && pair.TD_HTS === 'SELL' && pair.TD_TS === 'SELL' && pair.EVO_5 === 'SELL' && pair.EVO_15 === 'SELL') {
                     // store history
+                    var store_sell = new FormData();
+                    store_sell.append('pair_name', pair.pair.pair);
+                    store_sell.append('order_type', 'SELL');
+                    store_sell.append('pair_id', pair.id);
+                    Vue.http.post('/store/history', store_sell).then((response) => {
+                        //console.log(response);
+                    });
                     return '<b>SELL</b> <img src=\'img/down.ico\' width=\'17\' height=\'20\'/>';
                 } else if (pair.cs_signal === 'BUY' && pair.p_m5 === 'BUY' && pair.p_m15 === 'BUY' && pair.p_m30 === 'BUY'
                         && pair.p_h1 === 'BUY' && pair.TD_m5 === 'BUY' && pair.TD_m15 === 'BUY' && pair.TD_h1 === 'BUY'
                         && pair.TD_LTS === 'BUY' && pair.TD_HTS === 'BUY' && pair.TD_TS === 'BUY' && pair.EVO_5 === 'BUY' && pair.EVO_15 === 'BUY') {
                     // store history
+                    var store_buy = new FormData();
+                    store_buy.append('pair_name', pair.pair.pair);
+                    store_buy.append('order_type', 'BUY');
+                    store_buy.append('pair_id', pair.id);
+                    Vue.http.post('/store/history', store_buy).then((response) => {
+                        //console.log(response);
+                    });
                     return '<b>BUY</b> <img src=\'img/up.ico\' width=\'17\' height=\'20\'/>';
                 } else {
                     return 'NO';

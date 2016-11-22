@@ -24,3 +24,4 @@ Route::get("/update", ["as" => "mt4_update", "uses" => "MT4Controller@calculate"
 Route::get("/test", ["as" => "tests", "uses" => "MT4Controller@tests"]);
 
 Route::post("/store/history", ["as" => "store_history", "uses" => "MT4Controller@storeHistory"]);
+Route::post("/store/setting", ["as" => "store_setting", "uses" => "MT4Controller@storeSetting"]);

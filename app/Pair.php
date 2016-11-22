@@ -27,4 +27,9 @@ class Pair extends Model
     {
         return $this->hasMany(Signal::class);
     }
+
+    public function history()
+    {
+        return $this->hasMany(History::class);
+    }
 }

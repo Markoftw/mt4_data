@@ -13,6 +13,8 @@ use App\Pair;
 use App\Price;
 use App\Signal;
 use Illuminate\Support\Arr;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
+use Response;
 
 class MT4Controller extends Controller
 {
@@ -39,8 +41,8 @@ class MT4Controller extends Controller
 
     public function calculate_one()
     {
-        $signal = ["id"=>1,"pair_id"=>1,"cs_signal"=>"NO","p_m5"=>"BUY","p_m15"=>"SELL","p_m30"=>"SELL","p_h1"=>"SELL","TD_m5"=>"NEUTRAL","TD_m15"=>"BUY","TD_h1"=>"SELL","TD_LTS"=>"NEUTRAL","TD_HTS"=>"NEUTRAL","TD_TS"=>"SELL","EVO_5"=>"SELL","EVO_15"=>"SELL","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44","pair"=>["id"=>1,"pair"=>"AUDCAD","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44"]];
-        $signal2 = ["id"=>2,"pair_id"=>2,"cs_signal"=>"SELL","p_m5"=>"SELL","p_m15"=>"SELL","p_m30"=>"SELL","p_h1"=>"SELL","TD_m5"=>"SELL","TD_m15"=>"SELL","TD_h1"=>"SELL","TD_LTS"=>"SELL","TD_HTS"=>"SELL","TD_TS"=>"SELL","EVO_5"=>"SELL","EVO_15"=>"SELL","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44","pair"=>["id"=>1,"pair"=>"AUDCHF","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44"]];
+        $signal = ["id"=>1,"pair_id"=>1,"cs_signal"=>"NO","p_m5"=>"BUY","p_m15"=>"SELL","p_m30"=>"SELL","p_h1"=>"SELL","TD_m5"=>"NEUTRAL","TD_m15"=>"BUY","TD_h1"=>"SELL","TD_LTS"=>"NEUTRAL","TD_HTS"=>"NEUTRAL","TD_TS"=>"SELL","EVO_5"=>"SELL","EVO_15"=>"SELL","updated_at"=>"2016-11-19 22:42:44","pair"=>["id"=>1,"pair"=>"AUDCAD","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44"]];
+        $signal2 = ["id"=>2,"pair_id"=>2,"cs_signal"=>"SELL","p_m5"=>"SELL","p_m15"=>"SELL","p_m30"=>"SELL","p_h1"=>"SELL","TD_m5"=>"SELL","TD_m15"=>"SELL","TD_h1"=>"SELL","TD_LTS"=>"SELL","TD_HTS"=>"SELL","TD_TS"=>"SELL","EVO_5"=>"SELL","EVO_15"=>"SELL","updated_at"=>"2016-11-19 22:42:44","pair"=>["id"=>1,"pair"=>"AUDCHF","created_at"=>"2016-11-19 22:42:44","updated_at"=>"2016-11-19 22:42:44"]];
 
         broadcast(new SendForexData([$signal, $signal2]));
     }
@@ -156,7 +158,7 @@ class MT4Controller extends Controller
     public function tests()
     {
         $this->old_signals = Signal::with('pair')->get()->toArray();
-        Signal::where('id', 1)->update(['cs_signal' => 'New value']);
+        Signal::where('id', 1)->update(['cs_signal' => 'Value']);
         $new = Signal::with('pair')->get()->toArray();
         $different = false;
         for($i = 0; $i < 26; $i++) {
@@ -171,8 +173,48 @@ class MT4Controller extends Controller
         }
     }
 
-    public function storeHistory(){
-        return ['data' => 'success'];
+    public function storeHistory(Request $request)
+    {
+        $pair = Pair::with('prices')->where('pair', $request->input('pair_name'))->get();
+        $pair_price = $pair[0]->prices[0]->bid_price;
+        $history_data = [
+            'order_type' => "{$request->input('order_type')}",
+            'bid_price' => $pair_price,
+            'rating' => 'rate'
+        ];
+        $p = Pair::find($request->input('pair_id'));
+        $history = $p->history()->create($history_data);
+        if($history) {
+            return Response::json([
+                'errors' => false,
+                'data' => 'success',
+            ]);
+        }
+        return Response::json([
+            'message' => '400 error',
+            'errors' => [
+                'message' => ['error'],
+            ],
+            'status_code' => 400,
+        ], 400);
+    }
+
+    public function storeSetting(Request $request)
+    {                                                  // razlika                                         // 1.2
+        $data = Data::where('data_type', $request->only('data_type'))->update(['data' => $request->only('data_value')]);
+        if($data) {
+            return Response::json([
+                'errors' => false,
+                'data' => 'success',
+            ]);
+        }
+        return Response::json([
+            'message' => '400 error',
+            'errors' => [
+                'message' => ['error'],
+            ],
+            'status_code' => 400,
+        ], 400);
     }
 
     private function cstrength($item, $id)

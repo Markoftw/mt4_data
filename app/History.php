@@ -8,7 +8,12 @@ class History extends Model
 {
     protected $table = 'history';
 
-    protected $fillable = ['para', 'order_type', 'bid_price', 'rating'];
+    protected $fillable = ['order_type', 'bid_price', 'rating'];
 
     protected $hidden = [];
+
+    public function pair()
+    {
+        return $this->belongsTo(Pair::class, 'pair_id');
+    }
 }
