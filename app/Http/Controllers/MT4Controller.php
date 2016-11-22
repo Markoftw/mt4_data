@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendForexData;
+use App\Events\SendSettingData;
 use DB;
 use Illuminate\Http\Request;
 use App\Arrow;
@@ -33,8 +34,10 @@ class MT4Controller extends Controller
     public function getData()
     {
         $date = Signal::first()->updated_at;
+        $data = Data::where('data_type', 'razlika')->first()->data;
         $signals = Signal::with('pair')->get()->toArray();
         $signals[0]['updated_at'] = $date;
+        $signals[0]['razlika'] = $data;
         return $signals;
     }
 
@@ -199,9 +202,10 @@ class MT4Controller extends Controller
     }
 
     public function storeSetting(Request $request)
-    {                                                  // razlika                                         // 1.2
-        $data = Data::where('data_type', $request->only('data_type'))->update(['data' => $request->only('data_value')]);
+    {
+        $data = Data::where('data_type', $request->input('data_type'))->update(['data' => $request->input('data_value')]);
         if($data) {
+            broadcast(new SendSettingData(['razlika' => $request->input('data_value')]));
             return Response::json([
                 'errors' => false,
                 'data' => 'success',

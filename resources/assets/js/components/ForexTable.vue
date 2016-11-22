@@ -1,52 +1,85 @@
 <template>
-    <div>
+    <div class="container">
         <div>
             <h5><b>Last refresh:</b> {{ last_refresh }}</h5>
         </div>
-        <div style="width: 80%">
-            <table class="table table-hover table-top-border table-right-border table-bottom-border">
-                <thead>
-                <tr>
-                    <th style="width: 8.5%;">Pair</th>
-                    <th style="width: 6.5%;">CS Signal</th>
-                    <th style="width: 6.5%;">Period M5</th>
-                    <th style="width: 6.5%;">Period M15</th>
-                    <th style="width: 6.5%;">Period M30</th>
-                    <th style="width: 6.5%;">Period H1</th>
-                    <th style="width: 6.5%;">TD M5</th>
-                    <th style="width: 6.5%;">TD M15</th>
-                    <th style="width: 6.5%;">TD H1</th>
-                    <th style="width: 6.5%;">TD LTS</th>
-                    <th style="width: 6.5%;">TD HTS</th>
-                    <th style="width: 6.5%;">TD TS</th>
-                    <th style="width: 6.5%;">EVO M5</th>
-                    <th style="width: 6.5%;">EVO M15</th>
-                    <th style="width: 7%;">SIGNAL</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="row in table_data" :class="{'danger': signal(row) === 'SELL', 'success': signal(row) === 'BUY'}">
-                    <td>{{row.pair.pair}}</td>
-                    <td>{{row.cs_signal}}</td>
-                    <td>{{row.p_m5}}</td>
-                    <td>{{row.p_m15}}</td>
-                    <td>{{row.p_m30}}</td>
-                    <td>{{row.p_h1}}</td>
-                    <td>{{row.TD_m5}}</td>
-                    <td>{{row.TD_m15}}</td>
-                    <td>{{row.TD_h1}}</td>
-                    <td>{{row.TD_LTS}}</td>
-                    <td>{{row.TD_HTS}}</td>
-                    <td>{{row.TD_TS}}</td>
-                    <td>{{row.EVO_5}}</td>
-                    <td>{{row.EVO_15}}</td>
-                    <td v-html="signal_td(row)"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div style="width: 20%">
-
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="table-responsive">
+                    <table class="table table-hover table-top-border table-right-border table-bottom-border table-left-border">
+                    <thead>
+                    <tr>
+                        <th style="width: 8.5%;">Pair</th>
+                        <th style="width: 6.5%;">CS Signal</th>
+                        <th style="width: 6.5%;">Period M5</th>
+                        <th style="width: 6.5%;">Period M15</th>
+                        <th style="width: 6.5%;">Period M30</th>
+                        <th style="width: 6.5%;">Period H1</th>
+                        <th style="width: 6.5%;">TD M5</th>
+                        <th style="width: 6.5%;">TD M15</th>
+                        <th style="width: 6.5%;">TD H1</th>
+                        <th style="width: 6.5%;">TD LTS</th>
+                        <th style="width: 6.5%;">TD HTS</th>
+                        <th style="width: 6.5%;">TD TS</th>
+                        <th style="width: 6.5%;">EVO M5</th>
+                        <th style="width: 6.5%;">EVO M15</th>
+                        <th style="width: 7%;">SIGNAL</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="row in table_data" :class="{'danger': signal(row) === 'SELL', 'success': signal(row) === 'BUY'}">
+                        <td>{{row.pair.pair}}</td>
+                        <td>{{row.cs_signal}}</td>
+                        <td>{{row.p_m5}}</td>
+                        <td>{{row.p_m15}}</td>
+                        <td>{{row.p_m30}}</td>
+                        <td>{{row.p_h1}}</td>
+                        <td>{{row.TD_m5}}</td>
+                        <td>{{row.TD_m15}}</td>
+                        <td>{{row.TD_h1}}</td>
+                        <td>{{row.TD_LTS}}</td>
+                        <td>{{row.TD_HTS}}</td>
+                        <td>{{row.TD_TS}}</td>
+                        <td>{{row.EVO_5}}</td>
+                        <td>{{row.EVO_15}}</td>
+                        <td v-html="signal_td(row)"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <table class="table table-hover table-top-border table-right-border table-bottom-border table-left-border">
+                    <thead>
+                    <tr>
+                        <th>Settings</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <label for="diff_setting">Difference</label>
+                                <input type="text" class="form-control" id="diff_setting" placeholder="1.5" name="diff_setting" v-model="diff_data">
+                            </div>
+                            <button type="submit" class="btn btn-primary pull-right" @click="sendDiff()">Submit</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-hover table-top-border table-right-border table-bottom-border table-left-border">
+                    <thead>
+                    <tr>
+                        <th>History</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>PAIR</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -60,6 +93,7 @@
                 table_data: [],
                 last_mt4_update: 'Updating...',
                 last_refresh: 'Updating...',
+                diff_data: 1.5,
             }
         },
         methods: {
@@ -71,6 +105,7 @@
                         self.table_data.push(item);
                     });
                     self.last_refresh = new Date(response.data[0].updated_at).toString();
+                    self.diff_data = response.data[0].razlika;
                 });
             },
             signal(pair) {
@@ -114,6 +149,14 @@
                 } else {
                     return 'NO';
                 }
+            },
+            sendDiff() {
+                var diff_setting = new FormData();
+                diff_setting.append('data_type', 'razlika');
+                diff_setting.append('data_value', this.diff_data);
+                Vue.http.post('/store/setting', diff_setting).then((response) => {
+                    console.log(response);
+                });
             }
         },
         created() {
@@ -131,6 +174,10 @@
                     Vue.set(self.$data, 'table_data', event);
                     Vue.set(self.$data, 'last_refresh', new Date(event[0].updated_at).toString());
                  }
+            });
+            Echo.channel('forexsetting').listen('SendSettingData', (event) => {
+                //console.log(event);
+                Vue.set(self.$data, 'diff_data', event.setting.razlika);
             });
         },
         computed: {
