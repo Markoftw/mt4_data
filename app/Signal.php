@@ -17,4 +17,9 @@ class Signal extends Model
         return $this->belongsTo(Pair::class, 'pair_id');
     }
 
+    public function getDates()
+    {
+        return array();
+    }
+
 }

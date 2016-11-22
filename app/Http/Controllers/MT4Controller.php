@@ -12,8 +12,6 @@ use App\History;
 use App\Pair;
 use App\Price;
 use App\Signal;
-use Illuminate\Support\Arr;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use Response;
 
 class MT4Controller extends Controller
@@ -34,8 +32,9 @@ class MT4Controller extends Controller
 
     public function getData()
     {
+        $date = Signal::first()->updated_at;
         $signals = Signal::with('pair')->get()->toArray();
-        $signals[0]['updated_at'] = date("Y-m-d H:i:s");
+        $signals[0]['updated_at'] = $date;
         return $signals;
     }
 
