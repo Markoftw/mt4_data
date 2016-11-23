@@ -46,6 +46,7 @@ import Echo from "laravel-echo"
 window.Echo = new Echo({
     cluster: 'eu',
     broadcaster: 'pusher',
-    key: 'b4a91269dd5b2f1188c8',
+    //key: 'd16edc8e2c9d90d2c23c', // dev
+    key: 'b4a91269dd5b2f1188c8', // production
     encrypted: true
 });

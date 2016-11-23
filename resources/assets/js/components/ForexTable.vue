@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div>
-            <h5><b>Last refresh:</b> {{ last_refresh }}</h5>
-        </div>
+        <a class="btn btn-sm btn-primary pull-right" href="/history" role="button" style="margin-top: 4px">View history »</a>
+        <h5 v-if="countdown > 0" class="pull-right">Force page reload in {{ countdown }}s - {{ update_reason }} &nbsp;</h5>
+        <h5 class="pull-left"><b>Last refresh:</b> {{ last_refresh }}</h5>
         <div class="row">
             <div class="col-lg-10">
                 <div class="table-responsive">
@@ -65,10 +65,10 @@
                             <td data-original-title="TD TS" data-container="body" data-toggle="tooltip"
                                 data-placement="right">{{row.TD_TS}}
                             </td>
-                            <td data-original-title="EVO 5" data-container="body" data-toggle="tooltip"
+                            <td data-original-title="EVO M5" data-container="body" data-toggle="tooltip"
                                 data-placement="right">{{row.EVO_5}}
                             </td>
-                            <td data-original-title="EVO 15" data-container="body" data-toggle="tooltip"
+                            <td data-original-title="EVO M15" data-container="body" data-toggle="tooltip"
                                 data-placement="right">{{row.EVO_15}}
                             </td>
                             <td v-html="signal_td(row)" data-original-title="Signal" data-container="body"
@@ -133,9 +133,11 @@
             return {
                 table_data: [],
                 history_data: [],
-                last_refresh: 'Updating...',
+                last_refresh: 'Loading...',
                 diff_data: 1.5,
                 btn_disabled: false,
+                countdown: 0,
+                update_reason: 'unknown',
             }
         },
         methods: {
@@ -185,35 +187,11 @@
                         && pair.p_h1 === 'SELL' && pair.TD_m5 === 'SELL' && pair.TD_m15 === 'SELL' && pair.TD_h1 === 'SELL'
                         && pair.TD_LTS === 'SELL' && pair.TD_HTS === 'SELL' && pair.TD_TS === 'SELL' && pair.EVO_5 === 'SELL' && pair.EVO_15 === 'SELL') {
                     // store history
-                    Vue.http.get('/get/history/' + pair.pair_id).then((response) => {
-                        //console.log(response);
-                        if(date_now - new Date(response.body.created_at) > one_hr || response.body.size == 0) {
-                            var store_sell = new FormData();
-                            store_sell.append('pair_name', pair.pair.pair);
-                            store_sell.append('order_type', 'SELL');
-                            store_sell.append('pair_id', pair.id);
-                            Vue.http.post('/store/history', store_sell).then((response) => {
-                                //console.log(response);
-                            });
-                        }
-                    });
                     return '<b>SELL</b> <img src=\'img/down.ico\' width=\'17\' height=\'20\'/>';
                 } else if (pair.cs_signal === 'BUY' && pair.p_m5 === 'BUY' && pair.p_m15 === 'BUY' && pair.p_m30 === 'BUY'
                         && pair.p_h1 === 'BUY' && pair.TD_m5 === 'BUY' && pair.TD_m15 === 'BUY' && pair.TD_h1 === 'BUY'
                         && pair.TD_LTS === 'BUY' && pair.TD_HTS === 'BUY' && pair.TD_TS === 'BUY' && pair.EVO_5 === 'BUY' && pair.EVO_15 === 'BUY') {
                     // store history
-                    Vue.http.get('/get/history/' + pair.pair_id).then((response) => {
-                        //console.log(response.body);
-                        if(date_now - new Date(response.body.created_at) > one_hr || response.body.size == 0) {
-                            var store_buy = new FormData();
-                            store_buy.append('pair_name', pair.pair.pair);
-                            store_buy.append('order_type', 'BUY');
-                            store_buy.append('pair_id', pair.id);
-                            Vue.http.post('/store/history', store_buy).then((response) => {
-                                //console.log(response);
-                            });
-                        }
-                    });
                     return '<b>BUY</b> <img src=\'img/up.ico\' width=\'17\' height=\'20\'/>';
                 } else {
                     return 'NO';
@@ -229,6 +207,16 @@
                     //console.log(response);
                     self.btn_disabled = false;
                 });
+            },
+            refresh_cd() {
+                var self = this;
+                var cd_timer = setInterval(function() {
+                    if(self.countdown == 0) {
+                        location.reload();
+                        return clearInterval(cd_timer);
+                    }
+                    self.countdown -= 1
+                }, 1000)
             }
         },
         created() {
@@ -258,6 +246,13 @@
                     Vue.set(self.$data, 'history_data', event.history);
                 } else {
                     Vue.set(self.$data, 'history_data', event);
+                }
+            });
+            Echo.channel('force-refresh').listen('ForceRefreshPage', (event) => {
+                if(event.refresh.force === true) {
+                    Vue.set(self.$data, 'countdown', 30);
+                    Vue.set(self.$data, 'update_reason', event.refresh.reason);
+                    self.refresh_cd();
                 }
             });
         },

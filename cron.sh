@@ -7,7 +7,7 @@ DOW=$(date +%u)
 if [ "$URA" -ge 8 -a "$URA" -le 19 -a "$DOW" -ge 1 -a "$DOW" -le 5 ]
 then
 curl http://frx.marefx.com/update
-sleep 5
+sleep 4
 else
 echo "Market offline"
 sleep 30
