@@ -14,6 +14,7 @@
                             <th>Date added</th>
                             <th>Order</th>
                             <th>Bid price</th>
+                            <th>Order placed</th>
                             <th>M5</th>
                             <th>M15</th>
                             <th>H1</th>
@@ -26,6 +27,7 @@
                             <td>{{row.created_at}}</td>
                             <td>{{row.order_type}}</td>
                             <td>{{row.bid_price}}</td>
+                            <td>{{row.order_placed}}</td>
                             <td v-if="row.m5 === 'ratem5'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm5')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm5')">No</button></td>
                             <td v-else>{{ row.m5 }}</td>
                             <td v-if="row.m15 === 'ratem15'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm15')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm15')">No</button></td>
@@ -65,8 +67,20 @@
                             self.table_data.push(item);
                         });
                         self.last_update = new Date(response.data[0].created_at).toString();
+                        self.updateProfit();
                     }
                 });
+            },
+            updateProfit(){
+                var leng = this.table_data.length;
+                var self = this;
+                for(var i = 0; i < leng; i++) {
+                    if(self.table_data[i].rating === 'Correct'){
+                        self.pip_profit += 10;
+                    } else if(self.table_data[i].rating === 'Incorrect'){
+                        self.pip_profit -= 20;
+                    }
+                }
             },
             refresh_cd() {
                 var self = this;
@@ -106,6 +120,7 @@
             Echo.channel('historysignals').listen('SendHistorySignalsData', (event) => {
                 Vue.set(self.$data, 'table_data', event.history);
                 Vue.set(self.$data, 'last_update', new Date(event.history[0].created_at).toString());
+                self.updateProfit();
             });
         },
         computed: {
