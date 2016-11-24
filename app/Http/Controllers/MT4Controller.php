@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SendForexData;
 use App\Events\SendHistoryData;
+use App\Events\SendHistorySignalsData;
 use App\Events\SendSettingData;
 use Carbon\Carbon;
 use DB;
@@ -184,17 +185,23 @@ class MT4Controller extends Controller
             $history = $this->checkHistory($signal_pair['id']);
             if(count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'SELL');
+                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
+                broadcast(new SendHistorySignalsData($hs));
             }
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
             $length = $db->diffInHours($now);
             if($length > 0) {
                 $this->storeHistory($signal_pair['id'], 'SELL');
+                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
+                broadcast(new SendHistorySignalsData($hs));
             }
         } else if (isset($count['BUY']) && $count['BUY'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
             if(count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'BUY');
+                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
+                broadcast(new SendHistorySignalsData($hs));
             }
 
             $db = Carbon::parse($history['created_at']);
@@ -202,6 +209,8 @@ class MT4Controller extends Controller
             $length = $db->diffInHours($now);
             if($length > 0) {
                 $this->storeHistory($signal_pair['id'], 'BUY');
+                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
+                broadcast(new SendHistorySignalsData($hs));
             }
         } else {
 
@@ -228,18 +237,21 @@ class MT4Controller extends Controller
 
     public function storeHistory($pair_id, $order)
     {
-        $pair = Pair::with('prices')->where('id', $pair_id)->get();
-        $pair_price = $pair[0]->prices[0]->bid_price;
-        $history_data = [
-            'order_type' => $order,
-            'bid_price' => $pair_price,
-            'rating' => 'rate'
-        ];
-        $p = Pair::find($pair_id);
-        $history = $p->history()->create($history_data);
-        if ($history) {
-            $hs_data = $this->getHistoryData();
-            broadcast(new SendHistoryData($hs_data));
+        $timestamp = date("H");
+        if($timestamp >= 8 && $timestamp <= 19) {
+            $pair = Pair::with('prices')->where('id', $pair_id)->get();
+            $pair_price = $pair[0]->prices[0]->bid_price;
+            $history_data = [
+                'order_type' => $order,
+                'bid_price' => $pair_price,
+                'difference' => $this->razlika
+            ];
+            $p = Pair::find($pair_id);
+            $history = $p->history()->create($history_data);
+            if ($history) {
+                $hs_data = $this->getHistoryData();
+                broadcast(new SendHistoryData($hs_data));
+            }
         }
     }
 

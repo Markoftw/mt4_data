@@ -224,7 +224,7 @@
             this.fetchHistoryData();
         },
         mounted() {
-            console.log('Component ready.');
+            console.log('Forex component ready.');
             var self = this;
             Echo.channel('forextable').listen('SendForexData', (event) => {
                 //console.log(event);

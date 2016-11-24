@@ -20,10 +20,12 @@ class CreateHistoryTable extends Migration
             $table->string('order_type', 4);
             $table->text('bid_price');
             $table->text('difference')->nullable();
-            $table->string('m5', 4)->default('rate');
-            $table->string('m15', 4)->default('rate');
-            $table->string('h1', 4)->default('rate');
-            $table->string('rating', 10);
+            $table->string('m5', 6)->default('ratem5');
+            $table->string('m15', 7)->default('ratem15');
+            $table->string('h1', 6)->default('rateh1');
+            $table->string('rating', 10)->default('rate');
+            $table->string('order_placed', 3)->default('No');
+            $table->string('order_completed', 3)->default('No');
             $table->timestamps();
         });
     }

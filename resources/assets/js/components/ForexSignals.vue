@@ -26,10 +26,14 @@
                             <td>{{row.created_at}}</td>
                             <td>{{row.order_type}}</td>
                             <td>{{row.bid_price}}</td>
-                            <td>{{row.m5}}</td>
-                            <td>{{row.m15}}</td>
-                            <td>{{row.h1}}</td>
-                            <td>{{row.rating}}</td>
+                            <td v-if="row.m5 === 'ratem5'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm5')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm5')">No</button></td>
+                            <td v-else>{{ row.m5 }}</td>
+                            <td v-if="row.m15 === 'ratem15'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm15')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm15')">No</button></td>
+                            <td v-else>{{ row.m15 }}</td>
+                            <td v-if="row.h1 === 'rateh1'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'h1')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'h1')">No</button></td>
+                            <td v-else>{{ row.h1 }}</td>
+                            <td v-if="row.rating === 'rate'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Correct', 'rating')">Correct</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'Incorrect', 'rating')">Incorrect</button></td>
+                            <td v-else>{{ row.rating }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -73,13 +77,24 @@
                     }
                     self.countdown -= 1
                 }, 1000)
-            }
+            },
+            updateRating(row, value, period) {
+                //console.log(row, param, period);
+                var self = this;
+                var form_data = new FormData();
+                form_data.append('history_id', row.id);
+                form_data.append('history_value', value);
+                form_data.append('history_period', period);
+                Vue.http.post('/store/history/signals', form_data).then((response) => {
+                    //console.log(response);
+                });
+            },
         },
         created() {
             this.fetchHistoryData();
         },
         mounted() {
-            console.log('Component ready.');
+            console.log('History component ready.');
             var self = this;
             Echo.channel('force-refresh').listen('ForceRefreshPage', (event) => {
                 if(event.refresh.force === true) {
@@ -93,6 +108,8 @@
                 Vue.set(self.$data, 'last_update', new Date(event.history[0].created_at).toString());
             });
         },
-        computed: {}
+        computed: {
+
+        }
     }
 </script>
