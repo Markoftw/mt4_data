@@ -16,6 +16,3 @@ use Illuminate\Http\Request;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
-
-Route::get("/data", ["as" => "mt4_api", "uses" => "MT4Controller@api_Json"]);
-
