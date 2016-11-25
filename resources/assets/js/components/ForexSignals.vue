@@ -72,6 +72,7 @@
                 });
             },
             updateProfit(){
+                this.countdown = 0;
                 var leng = this.table_data.length;
                 var self = this;
                 for(var i = 0; i < leng; i++) {
