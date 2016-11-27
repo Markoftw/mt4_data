@@ -38,7 +38,7 @@ class SignalsController extends Controller
                 break;
         }
 
-        if($history) {
+        if ($history) {
             $new_history = $this->getData();
             broadcast(new SendHistorySignalsData($new_history));
         }

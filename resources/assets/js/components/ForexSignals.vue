@@ -15,9 +15,9 @@
                             <th>Order</th>
                             <th>Bid price</th>
                             <th>Order placed</th>
-                            <th>M5</th>
+                            <!--<th>M5</th>
                             <th>M15</th>
-                            <th>H1</th>
+                            <th>H1</th>-->
                             <th>Rating</th>
                         </tr>
                         </thead>
@@ -28,12 +28,12 @@
                             <td>{{row.order_type}}</td>
                             <td>{{row.bid_price}}</td>
                             <td>{{row.order_placed}}</td>
-                            <td v-if="row.m5 === 'ratem5'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm5')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm5')">No</button></td>
+                            <!--<td v-if="row.m5 === 'ratem5'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm5')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm5')">No</button></td>
                             <td v-else>{{ row.m5 }}</td>
                             <td v-if="row.m15 === 'ratem15'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'm15')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'm15')">No</button></td>
                             <td v-else>{{ row.m15 }}</td>
                             <td v-if="row.h1 === 'rateh1'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Yes', 'h1')">Yes</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'No', 'h1')">No</button></td>
-                            <td v-else>{{ row.h1 }}</td>
+                            <td v-else>{{ row.h1 }}</td>-->
                             <td v-if="row.rating === 'rate'"><button class="btn btn-xs btn-success" @click="updateRating(row, 'Correct', 'rating')">Correct</button>&nbsp;<button class="btn btn-xs btn-danger" @click="updateRating(row, 'Incorrect', 'rating')">Incorrect</button></td>
                             <td v-else>{{ row.rating }}</td>
                         </tr>
@@ -41,6 +41,18 @@
                     </table>
                 </div>
             </div>
+            <!--<div class="col-md-5">
+                <table class="table table-striped table-hover table-top-border table-right-border table-bottom-border table-left-border">
+                    <thead>
+                    <tr>
+                        <th>Statistics</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>-->
         </div>
     </div>
 </template>

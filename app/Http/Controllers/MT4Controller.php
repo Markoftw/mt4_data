@@ -50,14 +50,6 @@ class MT4Controller extends Controller
         return $history;
     }
 
-    public function calculate_one()
-    {
-        $signal = ["id" => 1, "pair_id" => 1, "cs_signal" => "NO", "p_m5" => "BUY", "p_m15" => "SELL", "p_m30" => "SELL", "p_h1" => "SELL", "TD_m5" => "NEUTRAL", "TD_m15" => "BUY", "TD_h1" => "SELL", "TD_LTS" => "NEUTRAL", "TD_HTS" => "NEUTRAL", "TD_TS" => "SELL", "EVO_5" => "SELL", "EVO_15" => "SELL", "updated_at" => "2016-11-19 22:42:44", "pair" => ["id" => 1, "pair" => "AUDCAD", "created_at" => "2016-11-19 22:42:44", "updated_at" => "2016-11-19 22:42:44"]];
-        $signal2 = ["id" => 2, "pair_id" => 2, "cs_signal" => "SELL", "p_m5" => "SELL", "p_m15" => "SELL", "p_m30" => "SELL", "p_h1" => "SELL", "TD_m5" => "SELL", "TD_m15" => "SELL", "TD_h1" => "SELL", "TD_LTS" => "SELL", "TD_HTS" => "SELL", "TD_TS" => "SELL", "EVO_5" => "SELL", "EVO_15" => "SELL", "updated_at" => "2016-11-19 22:42:44", "pair" => ["id" => 1, "pair" => "AUDCHF", "created_at" => "2016-11-19 22:42:44", "updated_at" => "2016-11-19 22:42:44"]];
-
-        broadcast(new SendForexData([$signal, $signal2]));
-    }
-
     public function calculate()
     {
         $this->old_signals = Signal::with('pair')->get()->toArray();
@@ -162,7 +154,7 @@ class MT4Controller extends Controller
 
         if ($different) {
             $count = count($new);
-            for($j = 0; $j < $count; $j++) {
+            for ($j = 0; $j < $count; $j++) {
                 $this->getSignalStatus($new[$j]);
             }
             $new[0]['updated_at'] = date("Y-m-d H:i:s");
@@ -177,13 +169,13 @@ class MT4Controller extends Controller
         for($i = 2; $i < 15; $i++){
             array_push($arr_results, $values[$i]);
         }*/
-        if(isset($signal_pair['pair'])) {
+        if (isset($signal_pair['pair'])) {
             unset($signal_pair['pair']);
         }
         $count = array_count_values($signal_pair);
         if (isset($count['SELL']) && $count['SELL'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
-            if(count($history) == 0) {
+            if (count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'SELL');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
@@ -191,14 +183,14 @@ class MT4Controller extends Controller
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
             $length = $db->diffInHours($now);
-            if($length > 0) {
+            if ($length > 0) {
                 $this->storeHistory($signal_pair['id'], 'SELL');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
             }
         } else if (isset($count['BUY']) && $count['BUY'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
-            if(count($history) == 0) {
+            if (count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'BUY');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
@@ -207,7 +199,7 @@ class MT4Controller extends Controller
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
             $length = $db->diffInHours($now);
-            if($length > 0) {
+            if ($length > 0) {
                 $this->storeHistory($signal_pair['id'], 'BUY');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
@@ -226,19 +218,10 @@ class MT4Controller extends Controller
         }
     }
 
-    public function tests()
-    {
-        $history = $this->checkHistory(24);
-        if(count($history) == 0) {
-            echo "NONE";
-        }
-
-    }
-
     public function storeHistory($pair_id, $order)
     {
         $timestamp = date("H");
-        if($timestamp >= 8 && $timestamp <= 19) {
+        if ($timestamp >= 8 && $timestamp <= 19) {
             $pair = Pair::with('prices')->where('id', $pair_id)->get();
             $pair_price = $pair[0]->prices[0]->bid_price;
             $history_data = [
@@ -252,14 +235,6 @@ class MT4Controller extends Controller
                 $hs_data = $this->getHistoryData();
                 broadcast(new SendHistoryData($hs_data));
             }
-        }
-    }
-
-    public function storeSetting(Request $request)
-    {
-        $data = Data::where('data_type', $request->input('data_type'))->update(['data' => $request->input('data_value')]);
-        if ($data) {
-            broadcast(new SendSettingData(['razlika' => $request->input('data_value')]));
         }
     }
 
