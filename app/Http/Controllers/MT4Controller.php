@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SendForexData;
 use App\Events\SendHistoryData;
 use App\Events\SendHistorySignalsData;
-use App\Events\SendSettingData;
 use Carbon\Carbon;
-use DB;
-use Illuminate\Http\Request;
 use App\Arrow;
 use App\CStrength;
 use App\Data;
@@ -16,7 +13,7 @@ use App\History;
 use App\Pair;
 use App\Price;
 use App\Signal;
-use Response;
+use App\Helpers\HQSMS;
 
 class MT4Controller extends Controller
 {
@@ -218,7 +215,7 @@ class MT4Controller extends Controller
         }
     }
 
-    public function storeHistory($pair_id, $order)
+    private function storeHistory($pair_id, $order)
     {
         $timestamp = date("H");
         if ($timestamp >= 8 && $timestamp <= 19) {

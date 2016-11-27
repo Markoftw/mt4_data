@@ -23,7 +23,6 @@ Route::get("/data/history", ["as" => "mt4_history", "uses" => "MT4Controller@get
 Route::get("/data/signals", ["as" => "mt4_data", "uses" => "MT4Controller@getData"]);
 Route::get("/update", ["as" => "mt4_update", "uses" => "MT4Controller@calculate"]);
 Route::get("/get/history/{pair}", ["as" => "mt4_check_history", "uses" => "MT4Controller@checkHistory"]);
-Route::post("/store/history", ["as" => "store_history", "uses" => "MT4Controller@storeHistory"]);
 
 Route::get("/history", ["as" => "mt4_history_index", "uses" => "SignalsController@index"]);
 Route::get("/data/history/signals", ["as" => "mt4_history_signals", "uses" => "SignalsController@getData"]);
