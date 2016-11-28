@@ -84,7 +84,7 @@
                 });
             },
             updateProfit(){
-                this.countdown = 0;
+                this.pip_profit = 0;
                 var leng = this.table_data.length;
                 var self = this;
                 for(var i = 0; i < leng; i++) {
@@ -107,7 +107,6 @@
             },
             updateRating(row, value, period) {
                 //console.log(row, param, period);
-                var self = this;
                 var form_data = new FormData();
                 form_data.append('history_id', row.id);
                 form_data.append('history_value', value);
