@@ -30,3 +30,4 @@ Route::post("/store/history/signals", ["as" => "store_history_signals", "uses" =
 
 Route::get("/force-refresh/{reason}", ["as" => "force_refresh", "uses" => "SettingsController@send_refresh"]);
 Route::post("/store/setting", ["as" => "store_setting", "uses" => "SettingsController@storeSetting"]);
+Route::post("/store/notifications", ["as" => "store_notifications", "uses" => "SettingsController@storeNotifications"]);

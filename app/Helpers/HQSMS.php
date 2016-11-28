@@ -2,18 +2,19 @@
 
 namespace App\Helpers;
 
+use App\User;
+
 class HQSMS
 {
-                        //luka           cater          marko
-    private $numbers = ['38640555922', '38651609658', '38641807670'];
-
     private $token = 'nkjjSvNPChgdS4SVOoyok5apulW2E5TSRFpzLllW';
 
     public function send_sms($message)
     {
-        foreach ($this->numbers as $number) {
+        $users = User::where('active_sms', true)->get();
+
+        foreach ($users as $user) {
             $params = array(
-                'to' => $number,
+                'to' => $user->phone_num,
                 'from' => 'RippleWise',
                 'message' => $message,
             );

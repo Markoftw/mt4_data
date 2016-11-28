@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SendForexData;
 use App\Events\SendHistoryData;
 use App\Events\SendHistorySignalsData;
+use App\User;
 use Carbon\Carbon;
 use App\Arrow;
 use App\CStrength;
@@ -34,10 +35,12 @@ class MT4Controller extends Controller
     public function getData()
     {
         $date = Signal::first()->updated_at;
+        $users = User::all()->toArray();
         $data = Data::where('data_type', 'razlika')->first()->data;
         $signals = Signal::with('pair')->get()->toArray();
         $signals[0]['updated_at'] = $date;
         $signals[0]['razlika'] = $data;
+        $signals[0]['users'] = $users;
         return $signals;
     }
 

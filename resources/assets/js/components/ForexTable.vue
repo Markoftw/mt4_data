@@ -93,8 +93,17 @@
                                 <input type="text" class="form-control" id="diff_setting" placeholder="1.5"
                                        name="diff_setting" v-model="diff_data">
                             </div>
-                            <button type="submit" class="btn btn-primary pull-right" @click="sendDiff()"
-                                    :disabled="btn_disabled">Submit
+                            <button type="submit" class="btn btn-primary pull-right" @click="sendDiff()" :disabled="btn_disabled">Submit
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>SMS Notifications</label>
+                            <div class="checkbox" v-for="sms in sms_settings">
+                                <label><input type="checkbox" :value="sms.id" v-model="checkedNames">{{ sms.name }}</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary pull-right" @click="updateSMS()" :disabled="sms_btn_disabled">Submit
                             </button>
                         </td>
                     </tr>
@@ -136,8 +145,11 @@
                 last_refresh: 'Loading...',
                 diff_data: 1.5,
                 btn_disabled: false,
+                sms_btn_disabled: false,
                 countdown: 0,
                 update_reason: 'unknown',
+                sms_settings: [],
+                checkedNames: [],
             }
         },
         methods: {
@@ -150,6 +162,12 @@
                     });
                     self.last_refresh = new Date(response.data[0].updated_at).toString();
                     self.diff_data = response.data[0].razlika;
+                    self.sms_settings = response.data[0].users;
+                    for(var i = 0; i < response.data[0].users.length; i++) {
+                        if(response.data[0].users[i].active_sms === 1) {
+                            self.checkedNames.push(i + 1);
+                        }
+                    }
                     Vue.nextTick(() => {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
@@ -206,6 +224,16 @@
                 Vue.http.post('/store/setting', diff_setting).then((response) => {
                     //console.log(response);
                     self.btn_disabled = false;
+                });
+            },
+            updateSMS() {
+                console.log(this.checkedNames);
+                var self = this;
+                this.sms_btn_disabled = true;
+                var checkedUsers = new FormData();
+                checkedUsers.append('checkedUsers', this.checkedNames);
+                Vue.http.post('/store/notifications', checkedUsers).then((response) => {
+                    self.sms_btn_disabled = false;
                 });
             },
             refresh_cd() {
