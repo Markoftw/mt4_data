@@ -266,7 +266,16 @@
             });
             Echo.channel('forexsetting').listen('SendSettingData', (event) => {
                 //console.log(event);
-                Vue.set(self.$data, 'diff_data', event.setting.razlika);
+                if(event.setting.razlika != null) {
+                    Vue.set(self.$data, 'diff_data', event.setting.razlika);
+                } else if (event.setting.smsnotify != null) {
+                    console.log(event.setting.smsnotify);
+                    self.checkedNames = [];
+                    for(var i = 0; i < event.setting.smsnotify.length; i++) {
+                        self.checkedNames.push(event.setting.smsnotify[i]);
+                    }
+                }
+
             });
             Echo.channel('forexhistory').listen('SendHistoryData', (event) => {
                 //console.log(event);

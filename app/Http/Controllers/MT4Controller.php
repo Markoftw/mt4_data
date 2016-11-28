@@ -179,6 +179,7 @@ class MT4Controller extends Controller
                 $this->storeHistory($signal_pair['id'], 'SELL');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
+                //Send SMS
             }
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
@@ -187,6 +188,7 @@ class MT4Controller extends Controller
                 $this->storeHistory($signal_pair['id'], 'SELL');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
+                //Send SMS
             }
         } else if (isset($count['BUY']) && $count['BUY'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
@@ -194,6 +196,7 @@ class MT4Controller extends Controller
                 $this->storeHistory($signal_pair['id'], 'BUY');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
+                //Send SMS
             }
 
             $db = Carbon::parse($history['created_at']);
@@ -203,6 +206,7 @@ class MT4Controller extends Controller
                 $this->storeHistory($signal_pair['id'], 'BUY');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
+                //Send SMS
             }
         } else {
 

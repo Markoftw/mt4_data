@@ -40,5 +40,7 @@ class SettingsController extends Controller
         foreach ($unchecked as $item) {
             User::where('id', $item)->update(['active_sms' => false]);
         }
+
+        broadcast(new SendSettingData(['smsnotify' => $arr_curr]));
     }
 }
