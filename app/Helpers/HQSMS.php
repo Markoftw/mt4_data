@@ -12,13 +12,15 @@ class HQSMS
     {
         $users = User::where('active_sms', true)->get();
 
-        foreach ($users as $user) {
-            $params = array(
-                'to' => $user->phone_num,
-                'from' => 'RippleWise',
-                'message' => $message,
-            );
-            $this->sms_send_oauth($params);
+        if(count($users)) {
+            foreach ($users as $user) {
+                $params = array(
+                    'to' => $user->phone_num,
+                    'from' => 'RippleWise',
+                    'message' => $message,
+                );
+                $this->sms_send_oauth($params);
+            }
         }
     }
 

@@ -175,16 +175,10 @@ class MT4Controller extends Controller
         $count = array_count_values($signal_pair);
         if (isset($count['SELL']) && $count['SELL'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
-            if (count($history) == 0) {
-                $this->storeHistory($signal_pair['id'], 'SELL');
-                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
-                broadcast(new SendHistorySignalsData($hs));
-                //Send SMS
-            }
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
             $length = $db->diffInHours($now);
-            if ($length > 0) {
+            if ($length > 0 || count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'SELL');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
@@ -192,17 +186,10 @@ class MT4Controller extends Controller
             }
         } else if (isset($count['BUY']) && $count['BUY'] == 13) {
             $history = $this->checkHistory($signal_pair['id']);
-            if (count($history) == 0) {
-                $this->storeHistory($signal_pair['id'], 'BUY');
-                $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
-                broadcast(new SendHistorySignalsData($hs));
-                //Send SMS
-            }
-
             $db = Carbon::parse($history['created_at']);
             $now = Carbon::now();
             $length = $db->diffInHours($now);
-            if ($length > 0) {
+            if ($length > 0 || count($history) == 0) {
                 $this->storeHistory($signal_pair['id'], 'BUY');
                 $hs = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
                 broadcast(new SendHistorySignalsData($hs));
