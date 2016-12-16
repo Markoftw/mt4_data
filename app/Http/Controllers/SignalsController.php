@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SendHistorySignalsData;
 use App\History;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SignalsController extends Controller
@@ -16,7 +17,8 @@ class SignalsController extends Controller
 
     public function getData()
     {
-        $history = History::with('pair')->orderBy('id', 'DESC')->get()->toArray();
+        $todayMinusOneWeekAgo = Carbon::today()->subWeek();
+        $history = History::with('pair')->where('created_at', '>=', $todayMinusOneWeekAgo)->orderBy('id', 'DESC')->get()->toArray();
         return $history;
     }
 

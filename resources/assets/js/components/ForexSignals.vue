@@ -3,7 +3,7 @@
         <a class="btn btn-sm btn-primary pull-right" href="/" role="button" style="margin-top: 4px;">« Back</a>
         <h5 v-if="countdown > 0" class="pull-right">Force page reload in {{ countdown }}s - {{ update_reason }} &nbsp;</h5>
         <h5><b>Last update:</b> {{ last_update }}</h5>
-        <h5><b>Profit:</b> {{ pip_profit }} PIPS</h5>
+        <h5><b>Profit (7days):</b> {{ pip_profit }} PIPS</h5>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">

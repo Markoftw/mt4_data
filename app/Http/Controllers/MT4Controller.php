@@ -218,7 +218,7 @@ class MT4Controller extends Controller
             $history_data = [
                 'order_type' => $order,
                 'bid_price' => $pair_price,
-                'difference' => $this->razlika
+                'difference' => Data::where('data_type', 'razlika')->first()->data
             ];
             $p = Pair::find($pair_id);
             $history = $p->history()->create($history_data);
