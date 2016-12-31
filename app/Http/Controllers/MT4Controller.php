@@ -52,6 +52,8 @@ class MT4Controller extends Controller
 
     public function calculate()
     {
+        $start_time = microtime(true);
+
         $this->old_signals = Signal::with('pair')->get()->toArray();
         $this->prices_all = Price::all();
         $this->arrows_all = Arrow::all();
@@ -160,6 +162,12 @@ class MT4Controller extends Controller
             $new[0]['updated_at'] = date("Y-m-d H:i:s");
             broadcast(new SendForexData($new));
         }
+
+        $end_time = microtime(true);
+        $time_diff = $end_time - $start_time;
+
+        return response(['timer' => round($time_diff, 2)], 200);
+
     }
 
     private function getSignalStatus($signal_pair)
